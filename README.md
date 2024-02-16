@@ -5,7 +5,7 @@ This project aims to help healthcare professionals to be more efficient with how
 
 ## Authors
 
+- [@GeoLuigi](https://www.github.com/GeoLuigi)
 - [@ivan-verges](https://github.com/ivan-verges)
-- [@jorgehurtado](https://www.github.com/jorgehurtado)
 - [@SelenaGarcia](https://github.com/SelenaGarcia)
 

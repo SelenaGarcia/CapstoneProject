@@ -1,0 +1,12 @@
+fastapi
+Flask
+gradio
+matplotlib
+numpy
+pandas
+polars
+pyreadr
+requests
+seaborn
+scikit-learn
+urllib3

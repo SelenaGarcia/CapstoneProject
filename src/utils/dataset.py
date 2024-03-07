@@ -2,12 +2,7 @@ import os
 import pyreadr
 import urllib.request
 
-def get_absolute_path(path: str) -> str:
-    absolute_path = path
-    if os.path.abspath(os.curdir) not in absolute_path:
-        absolute_path = os.path.join(os.path.abspath(os.curdir), absolute_path)
-    
-    return absolute_path
+from utils.path import get_absolute_path
 
 def download_dataset(file_url: str, file_directory: str, file_name: str) -> str:
     directory = get_absolute_path(file_directory)
@@ -28,6 +23,3 @@ def convert_dataset(original_path: str, destination_path: str) -> str:
         df.to_csv(destination_path, index=True)
     
     return destination_path
-
-if __name__ == '__main__':
-    print(f'Running Class: {__name__}')

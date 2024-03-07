@@ -1,6 +1,7 @@
 fastapi
 Flask
 gradio
+joblib
 matplotlib
 numpy
 pandas

@@ -1,8 +1,6 @@
 .DS_Store
-*.csv
 *.log
-*.rdata
 
 __pycache__
-
-patients.db
+data
+model

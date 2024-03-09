@@ -1,38 +1,53 @@
 import gradio as gr
 
 class WebApp:
-    def classify_emergency(*argv):
-        for arg in argv:
-            print(arg)
-        return 'Classifier Working'
+    def __init__(self, model) -> None:
+        self.model = model
+        self.genres = ["Female", "Male"]
+        self.emergency_factors = [
+            "Accidental Overdose",
+            "Bleeding or Bruising",
+            "Chest Pain",
+            "Difficulty Breathing",
+            "Elevated Blood Glucose Levels",
+            "Fainting (Syncope)",
+            "History of Seizures",
+            "Hypertension",
+            "Hypotension",
+            "Intentional Overdose",
+            "More than one Seizure",
+            "Possible Stroke Alert",
+            "Recent Seizure",
+            "Suicidal Thoughts",
+            "Unconscious or Unresponsive"
+        ]
+        self.other_factors = [
+            "Fever",
+            "Rash"
+        ]
     
-    with gr.Blocks() as demo:
-        with gr.Row():
-            with gr.Column():
-                chest_pain = gr.Checkbox(label="Does the patient have chest pain?")
-                dificult_breathing = gr.Checkbox(label="Is the patient having difficulty breathing?")
-                fainted = gr.Checkbox(label="Has the patient experienced fainting (syncope)?")
-                unresponsive = gr.Checkbox(label="Is the patient unconscious or unresponsive?")
-                recent_seizure = gr.Checkbox(label="Has the patient had a recent seizure?")
-                history_seizure = gr.Checkbox(label="Does the patient have a history of seizures?")
-                more_than_1_seizure = gr.Checkbox(label="Has the patient had more than one seizure?")
-                bleeding = gr.Checkbox(label="Is the patient experiencing bleeding or bruising?")
-            with gr.Column():
-                hight_glucose = gr.Checkbox(label="Does the patient have elevated blood glucose levels?")
-                hypertension = gr.Checkbox(label="Does the patient have hypertension?")
-                hypotension = gr.Checkbox(label="Does the patient have hypotension?")
-                stroke_alerts = gr.Checkbox(label="Is the patient a possible stroke alert?")
-                accidental_overdose = gr.Checkbox(label="Has the patient had an accidental overdose?")
-                intentional_overdose = gr.Checkbox(label="Has the patient had an intentional overdose?")
-                suicidal_thoughts = gr.Checkbox(label="Does the patient have suicidal thoughts?")
-            with gr.Column():
-                is_emergency = gr.Textbox(label="Classification")
-                classify_btn = gr.Button(value="Is Emergency?")
-        
-        inputs = [chest_pain, dificult_breathing, fainted, unresponsive, recent_seizure, history_seizure, more_than_1_seizure, bleeding, hight_glucose, hypertension, hypotension, stroke_alerts, accidental_overdose, intentional_overdose, suicidal_thoughts]
-        classify_btn.click(classify_emergency, inputs=inputs, outputs=is_emergency, api_name="Emergency Classificator")
+    def classify_emergency(self, *argv):
+        is_emergency = "Emergency" if len(argv[3]) else "Consult"
+        emergency_factors = f'Emergency Factors: {", ".join(argv[3]) if argv[3] else "None"}.'
+        other_factors = f'Other Factors: {", ".join(argv[4]) if argv[4] else "None"}.'
 
+        return f'Patiend: {argv[0]}, Age: {argv[1]}, Genre: {argv[2]}, Should go to: {is_emergency}. {emergency_factors} {other_factors}'
+    
+    def get_demo(self):
+        inputs = []
+
+        inputs.append(gr.Textbox(label="Patient Name"))
+        inputs.append(gr.Number(label="Patient Age", minimum=0, maximum=150))
+        inputs.append(gr.Dropdown(choices=self.genres, label="Patient Sex"))
+        inputs.append(gr.CheckboxGroup(choices=self.emergency_factors, label="Emergency Factors", info="Do Patient Has/Had..."))
+        inputs.append(gr.Dropdown(choices=self.other_factors, multiselect=True, label="Other Factors", info="Do Patient Has/Had..."))
+
+        is_emergency = gr.Textbox(label="Classification")
+
+        return gr.Interface(fn=self.classify_emergency, inputs=inputs, outputs=is_emergency, allow_flagging='auto')
+    
     def launch(self) -> None:
+        self.demo = self.get_demo()
         self.demo.launch()
 
 if __name__ == '__main__':

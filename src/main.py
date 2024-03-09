@@ -54,7 +54,7 @@ if __name__ == '__main__':
     # Reads Trained Model from File
     if os.path.isfile(model_path) and not model:
         model = read_model_from_file(model_path)
-
+    
     # Gets Model Metrics
     accuracy, confusion = validate_model(model, X_test, y_test)
 
@@ -62,5 +62,5 @@ if __name__ == '__main__':
     plot_data(X, y)
 
     #Runs Web APP
-    app = WebApp()
+    app = WebApp(model=model)
     app.launch()

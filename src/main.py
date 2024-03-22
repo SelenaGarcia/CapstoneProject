@@ -1,5 +1,6 @@
 import os
 
+from utils.calculatePriority import calculateAndPruneDataset
 from utils.dataset import download_dataset, convert_dataset
 from utils.eda import prepare_data, split_train_test_data, plot_data
 from utils.path import get_absolute_path
@@ -24,18 +25,23 @@ if __name__ == '__main__':
     # Test and Train Size to Split Data
     TEST_SIZE = 0.2
     TRAIN_SIZE = 0.8
-
     # Downloads the Original Dataset (RData File)
-    DATASET_RDATA_PATH = download_dataset(DATASET_URL, DATASET_PATH, DATASET_FILE)
+    DATASET_RDATA_PATH = download_dataset(
+        DATASET_URL, DATASET_PATH, DATASET_FILE)
 
     # Converts the RData File to a New CSV File
-    DATASET_CSV_PATH = convert_dataset(DATASET_RDATA_PATH, DATASET_RDATA_PATH.replace('.rdata', '.csv'))
+    DATASET_CSV_PATH = convert_dataset(
+        DATASET_RDATA_PATH, DATASET_RDATA_PATH.replace('.rdata', '.csv'))
 
     # Prepare Dataset to Train Model
-    X, y = prepare_data(DATASET_CSV_PATH)
+    X, y = calculateAndPruneDataset(
+        '/Users/selenagarcialobo/Proyectos/CURSOS/FUSEAI/Capstone Project/src/utils/capsone.xlsx', DATASET_CSV_PATH)
+
+    # X, y = prepare_data(DATASET_CSV_PATH)
 
     # Split Train and Test Data from Clean Dataframe
-    X_train, X_test, y_train, y_test = split_train_test_data(X, y, RANDOM_STATE, TEST_SIZE, TRAIN_SIZE)
+    X_train, X_test, y_train, y_test = split_train_test_data(
+        X, y, RANDOM_STATE, TEST_SIZE, TRAIN_SIZE)
 
     # Defines Path for Model Storage
     model_path = os.path.join(get_absolute_path(MODEL_PATH), MODEL_FILE)
@@ -50,17 +56,18 @@ if __name__ == '__main__':
 
         # Save Trained Model to File
         model_path = save_model_to_file(model, MODEL_PATH, MODEL_FILE)
-    
+
     # Reads Trained Model from File
     if os.path.isfile(model_path) and not model:
         model = read_model_from_file(model_path)
-    
+    print(str(model_path))
+
     # Gets Model Metrics
     accuracy, confusion = validate_model(model, X_test, y_test)
 
     # Plot Predictions
     plot_data(X, y)
 
-    #Runs Web APP
+    # Runs Web APP
     app = WebApp(model=model)
     app.launch()

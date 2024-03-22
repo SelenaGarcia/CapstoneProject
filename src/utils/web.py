@@ -1,9 +1,11 @@
 import gradio as gr
 
 class WebApp:
-    def __init__(self, model) -> None:
+    def __init__(self, model, host: str = '0.0.0.0', port: int = 8080) -> None:
         self.model = model
         self.genres = ["Female", "Male"]
+        self.host = host
+        self.port = port
         self.emergency_factors = [
             "Accidental Overdose",
             "Bleeding or Bruising",
@@ -48,7 +50,7 @@ class WebApp:
     
     def launch(self) -> None:
         self.demo = self.get_demo()
-        self.demo.launch()
+        self.demo.launch(server_name=self.host, server_port=self.port)
 
 if __name__ == '__main__':
     app = WebApp()

@@ -3,6 +3,7 @@ Flask
 gradio
 joblib
 matplotlib
+mlflow
 numpy
 pandas
 polars

@@ -1,0 +1,19 @@
+python: "3.8"
+build_dependencies:
+  - pip
+dependencies:
+  - fastapi
+  - Flask
+  - gradio
+  - joblib
+  - matplotlib
+  - mlflow
+  - numpy
+  - pandas
+  - polars
+  - pyreadr
+  - requests
+  - seaborn
+  - scikit-learn
+  - scipy
+  - urllib3

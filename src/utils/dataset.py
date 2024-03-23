@@ -2,7 +2,7 @@ import os
 import pyreadr
 import urllib.request
 
-from utils.path import get_absolute_path
+from src.utils.path import get_absolute_path
 
 def download_dataset(file_url: str, file_directory: str, file_name: str) -> str:
     directory = get_absolute_path(file_directory)

@@ -2,6 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+from utils.calculatePriority import calculateAndPruneDataset
 from utils.dataset import download_dataset, convert_dataset
 from utils.eda import prepare_data, split_train_test_data, plot_data
 from utils.path import get_absolute_path
@@ -34,10 +35,11 @@ if __name__ == '__main__':
     # Converts the RData File to a New CSV File
     print('Converting Dataset to CSV')
     DATASET_CSV_PATH = convert_dataset(DATASET_RDATA_PATH, DATASET_RDATA_PATH.replace('.rdata', '.csv'))
-
+    
     # Prepare Dataset to Train Model
     print('Preparing Dataset')
-    X, y = prepare_data(DATASET_CSV_PATH)
+    # X, y = prepare_data(DATASET_CSV_PATH)
+    X, y = calculateAndPruneDataset('/Users/selenagarcialobo/Proyectos/CURSOS/FUSEAI/Capstone Project/src/utils/capsone.xlsx', DATASET_CSV_PATH)
 
     # Split Train and Test Data from Clean Dataframe
     print('Spliting Dataset')
@@ -80,12 +82,13 @@ if __name__ == '__main__':
         # Save Trained Model to File
         print('Saving Model to File')
         model_path = save_model_to_file(model, MODEL_PATH, MODEL_FILE)
-    
+
     # Reads Trained Model from File
     if os.path.isfile(model_path) and not model:
         print('Reading Model from File')
         model = read_model_from_file(model_path)
-    
+    print(str(model_path))
+
     # Gets Model Metrics
     print('Validating Model')
     accuracy, confusion = validate_model(model, X_test, y_test)

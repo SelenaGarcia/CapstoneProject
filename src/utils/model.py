@@ -5,9 +5,9 @@ from sklearn.ensemble import RandomForestClassifier
 # from sklearn.impute import SimpleImputer
 from sklearn.metrics import accuracy_score, confusion_matrix
 
-def train_model(X_train, y_train, random_state = 0) -> RandomForestClassifier:
+def train_model(X_train, y_train, random_state = 0, estimators = 100) -> RandomForestClassifier:
     # Train the Model
-    model = RandomForestClassifier(n_estimators=100, random_state=random_state)
+    model = RandomForestClassifier(n_estimators=estimators, random_state=random_state)
     model.fit(X_train, y_train)
 
     return model

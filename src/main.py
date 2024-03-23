@@ -24,6 +24,9 @@ if __name__ == '__main__':
     # Random State to Split Data
     RANDOM_STATE = 0
 
+    # Random Forest Estimators
+    ESTIMATORS = 100
+
     # Test and Train Size to Split Data
     TEST_SIZE = 0.2
     TRAIN_SIZE = 0.8
@@ -74,30 +77,29 @@ if __name__ == '__main__':
     # Defines model Variable with None as Placeholder
     model = None
 
+    # Reads Trained Model from File
+    if os.path.isfile(model_path):
+        print('Reading Model from File')
+        model = read_model_from_file(model_path)
+    
     # Trains and Saves Trained Model to File if Doesn't Exists
-    if not os.path.isfile(model_path):
+    else:
         # Train Model
         print('Training Model')
-        model = train_model(X_train, y_train, RANDOM_STATE)
+        model = train_model(X_train, y_train, RANDOM_STATE, ESTIMATORS)
 
         # Save Trained Model to File
         print('Saving Model to File')
         model_path = save_model_to_file(model, MODEL_PATH, MODEL_FILE)
-
-    # Reads Trained Model from File
-    if os.path.isfile(model_path) and not model:
-        print('Reading Model from File')
-        model = read_model_from_file(model_path)
-    print(str(model_path))
-
+    
     # Gets Model Metrics
-    print('Validating Model')
-    accuracy, confusion = validate_model(model, X_test, y_test)
+    # print('Validating Model')
+    # accuracy, confusion = validate_model(model, X_test, y_test)
 
     # Plot Predictions
     # plot_data(X, y)
 
     #Runs Web APP
     print('Serving Model with Gradio')
-    app = WebApp(model=model, priority_file_path=PRIORITY_FILE_PATH, host='0.0.0.0', port=6789)
+    app = WebApp(model=model, host='0.0.0.0', port=6789)
     app.launch()

@@ -17,5 +17,5 @@ Dockerfile
 MLproject
 python_env.yaml
 README.md
-Results.csv
-Results.rdata
+data/Results.csv
+data/Results.rdata

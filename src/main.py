@@ -101,5 +101,5 @@ if __name__ == '__main__':
 
     #Runs Web APP
     print('Serving Model with Gradio')
-    app = WebApp(model=model, host='0.0.0.0', port=6789)
+    app = WebApp(model=model, priority_file_path=PRIORITY_FILE_PATH, host='0.0.0.0', port=6789)
     app.launch()

@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-# import pandas as pd
+import pandas as pd
 import polars as pl
 import seaborn as sns
 
@@ -58,6 +58,34 @@ def prepare_data(dataset_path: str) -> tuple:
 
     return (X, y)
 
+def calculate_and_prune_dataset(priorizationFile: str, datasetFile: str):
+    # Read datasets from files
+    priorization = pd.read_excel(priorizationFile)
+    dataset = pd.read_csv(datasetFile)
+
+    # filter non used columns
+    columns = priorization['Name'].tolist()
+    datasetFiltered = dataset[columns]
+
+    # Replace all numbers in the columns with True or False
+    datasetBoolean = datasetFiltered[columns] != 0
+
+    # Prepare for destructive changes
+    datasetTemp = datasetBoolean.copy()
+
+    for column in datasetTemp.columns:
+        if column in priorization['Name'].values:
+            priority_value = priorization.loc[priorization['Name'] == column, 'Priority'].iloc[0]
+            # Replace values in datasetTemp with priority values if not equal to 0
+            datasetTemp[column] = datasetTemp[column].apply(lambda x: priority_value if x != False else 0)
+
+    # Create a new column with the sum of columns present in priorization['Name']
+    datasetTemp['result'] = datasetTemp[priorization['Name']].sum(axis=1)
+
+    X = datasetBoolean
+    y = datasetTemp['result']
+
+    return (X, y)
 
 def split_train_test_data(X, y, random_state=0, test_size=0.2, train_size=0.8) -> list:
     return train_test_split(X, y, test_size=test_size, train_size=train_size, random_state=random_state)

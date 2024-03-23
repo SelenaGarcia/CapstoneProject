@@ -1,13 +1,35 @@
 import gradio as gr
 import pandas as pd
 
-
 class WebApp:
-    def __init__(self, model) -> None:
+    def __init__(self, model, host: str = '0.0.0.0', port: int = 8080) -> None:
         self.model = model
-        self.genres = ["Female", "Male"]
         self.emergency_factors = self.load_emergency_factors()
-
+        self.genres = ["Female", "Male"]
+        self.host = host
+        self.port = port
+        self.emergency_factors = [
+            "Accidental Overdose",
+            "Bleeding or Bruising",
+            "Chest Pain",
+            "Difficulty Breathing",
+            "Elevated Blood Glucose Levels",
+            "Fainting (Syncope)",
+            "History of Seizures",
+            "Hypertension",
+            "Hypotension",
+            "Intentional Overdose",
+            "More than one Seizure",
+            "Possible Stroke Alert",
+            "Recent Seizure",
+            "Suicidal Thoughts",
+            "Unconscious or Unresponsive"
+        ]
+        self.other_factors = [
+            "Fever",
+            "Rash"
+        ]
+    
     def load_emergency_factors(self):
         # Load Excel file and extract data from 'Data' sheet
         excel_path = "/Users/selenagarcialobo/Proyectos/CURSOS/FUSEAI/Capstone Project/src/utils/capsone.xlsx"
@@ -17,7 +39,7 @@ class WebApp:
         emergency_factors = data['Name'].tolist()
 
         return emergency_factors
-
+    
     def classify_emergency(self, *argv):
         is_emergency = "Emergency" if len(argv[3]) else "Consult"
         emergency_factors = f'Emergency Factors: {", ".join(argv[3]) if argv[3] else "None"}.'
@@ -41,7 +63,7 @@ class WebApp:
 
     def launch(self) -> None:
         self.demo = self.get_demo()
-        self.demo.launch()
+        self.demo.launch(server_name=self.host, server_port=self.port)
 
 
 if __name__ == '__main__':

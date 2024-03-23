@@ -2,8 +2,9 @@ import gradio as gr
 import pandas as pd
 
 class WebApp:
-    def __init__(self, model, host: str = '0.0.0.0', port: int = 8080) -> None:
+    def __init__(self, model, priority_file_path: str, host: str = '0.0.0.0', port: int = 8080) -> None:
         self.model = model
+        self.priority_file_path = priority_file_path
         self.emergency_factors = self.load_emergency_factors()
         self.genres = ["Female", "Male"]
         self.host = host
@@ -32,8 +33,7 @@ class WebApp:
     
     def load_emergency_factors(self):
         # Load Excel file and extract data from 'Data' sheet
-        excel_path = "/Users/selenagarcialobo/Proyectos/CURSOS/FUSEAI/Capstone Project/src/utils/capsone.xlsx"
-        data = pd.read_excel(excel_path, sheet_name="Data")
+        data = pd.read_excel(self.priority_file_path, sheet_name="Data")
 
         # Extract relevant column 'Name' for all rows
         emergency_factors = data['Name'].tolist()

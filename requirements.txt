@@ -5,11 +5,12 @@ joblib
 matplotlib
 mlflow
 numpy
+openpyxl
 pandas
 polars
 pyreadr
 requests
-seaborn
 scikit-learn
+seaborn
 urllib3
-openpyxl
+xlsx2csv

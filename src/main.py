@@ -2,9 +2,8 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-from utils.calculatePriority import calculateAndPruneDataset
 from utils.dataset import download_dataset, convert_dataset
-from utils.eda import prepare_data, split_train_test_data, plot_data
+from utils.eda import calculate_and_prune_dataset, prepare_data, split_train_test_data, plot_data
 from utils.path import get_absolute_path
 from utils.model import train_model, validate_model, save_model_to_file, read_model_from_file
 from utils.web import WebApp
@@ -16,6 +15,7 @@ if __name__ == '__main__':
     # Path for Dataset Storage
     DATASET_PATH = 'data'
     DATASET_FILE = 'Results.rdata'
+    PRIORITY_FILE = 'Priority.xlsx'
 
     # Path for Model Storage
     MODEL_PATH = 'model'
@@ -38,8 +38,9 @@ if __name__ == '__main__':
     
     # Prepare Dataset to Train Model
     print('Preparing Dataset')
+    PRIORITY_FILE_PATH = os.path.join(get_absolute_path(DATASET_PATH), PRIORITY_FILE)
+    X, y = calculate_and_prune_dataset(PRIORITY_FILE_PATH, DATASET_CSV_PATH)
     # X, y = prepare_data(DATASET_CSV_PATH)
-    X, y = calculateAndPruneDataset('/Users/selenagarcialobo/Proyectos/CURSOS/FUSEAI/Capstone Project/src/utils/capsone.xlsx', DATASET_CSV_PATH)
 
     # Split Train and Test Data from Clean Dataframe
     print('Spliting Dataset')
@@ -98,5 +99,5 @@ if __name__ == '__main__':
 
     #Runs Web APP
     print('Serving Model with Gradio')
-    app = WebApp(model=model, host='0.0.0.0', port=6789)
+    app = WebApp(model=model, priority_file_path=PRIORITY_FILE_PATH, host='0.0.0.0', port=6789)
     app.launch()

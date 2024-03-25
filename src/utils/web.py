@@ -34,7 +34,7 @@ class WebApp:
 
         result = self.model.predict(df)
 
-        return f'Patient Name: {patient_name}, Patient Age: {patient_age}, Patient Sex: {patient_sex}, Patient Symptoms: {patient_symptoms}, Prediction: {result[0]}'
+        return f'Patient Name: {patient_name}, Patient Age: {patient_age}, Patient Sex: {patient_sex}, Patient Symptoms: {patient_symptoms}, Prediction: {result}'
 
     def get_demo(self):
         inputs = []

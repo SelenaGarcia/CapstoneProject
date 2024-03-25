@@ -80,10 +80,11 @@ def calculate_and_prune_dataset(priorizationFile: str, datasetFile: str):
             datasetTemp[column] = datasetTemp[column].apply(lambda x: priority_value if x != False else 0)
 
     # Create a new column with the sum of columns present in priorization['Name']
-    datasetTemp['result'] = datasetTemp[priorization['Name']].sum(axis=1)
+    datasetTemp['PriorityIndex'] = datasetTemp[priorization['Name']].sum(axis=1)
+    datasetTemp['IsEmergency'] = dataset['disposition'].map({ 'Admit': True, 'Discharge': False })
 
     X = datasetBoolean
-    y = datasetTemp['result']
+    y = datasetTemp[['PriorityIndex', 'IsEmergency']]
 
     return (X, y)
 

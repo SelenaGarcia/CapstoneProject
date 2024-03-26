@@ -7,7 +7,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 
 def prepare_data(dataset_path: str) -> tuple:
@@ -93,6 +93,11 @@ def calculate_and_prune_dataset(priorizationFile: str, datasetFile: str):
     y = datasetFiltered[['IsEmergency', 'Priority']]
 
     return (X, y)
+
+def scale_data(X):
+    scaler = StandardScaler()
+
+    return scaler.fit_transform(X)
 
 def split_train_test_data(X, y, random_state=0, test_size=0.2, train_size=0.8) -> list:
     return train_test_split(X, y, test_size=test_size, train_size=train_size, random_state=random_state)

@@ -4,11 +4,30 @@ from joblib import dump, load
 from sklearn.ensemble import RandomForestClassifier
 # from sklearn.impute import SimpleImputer
 from sklearn.metrics import accuracy_score, confusion_matrix
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
 
-def train_model(X_train, y_train, random_state = 0, estimators = 100) -> RandomForestClassifier:
-    # Train the Model
+def train_model(X_train, y_train, random_state = 0, estimators = 100, epochs = 10, batch_size = 32, validation_split = 0.2) -> RandomForestClassifier:
+    # Train a Random Forest Classifier Model
     model = RandomForestClassifier(n_estimators=estimators, random_state=random_state)
     model.fit(X_train, y_train)
+
+    # # Train a Sequential Neural Network Model
+    # model = Sequential([
+    #             Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
+    #             Dense(32, activation='relu'),
+    #             Dense(2, activation='softmax')  # Output layer with 2 neurons for IsEmergency and Priority
+    #         ])
+    
+    # # Compile Model
+    # model.compile(
+    #             optimizer='adam',
+    #             loss='sparse_categorical_crossentropy',  # Use 'sparse_categorical_crossentropy' for integer labels
+    #             metrics=['accuracy']
+    #         )
+    
+    # # Train the Model
+    # model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=validation_split)
 
     return model
 

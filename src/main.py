@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from utils.dataset import download_dataset, convert_dataset
-from utils.eda import calculate_and_prune_dataset, prepare_data, split_train_test_data, plot_data
+from utils.eda import calculate_and_prune_dataset, prepare_data, split_train_test_data, plot_data, scale_data
 from utils.path import get_absolute_path
 from utils.model import train_model, validate_model, save_model_to_file, read_model_from_file
 from utils.web import WebApp
@@ -46,8 +46,11 @@ if __name__ == '__main__':
     # X, y = prepare_data(DATASET_CSV_PATH)
 
     # Saves X and Y Data to CSV Files
-    # X.to_csv(DATASET_RDATA_PATH.replace(DATASET_FILE, 'X.csv'), index=True)
-    # y.to_csv(DATASET_RDATA_PATH.replace(DATASET_FILE, 'y.csv'), index=True)
+    X.to_csv(DATASET_RDATA_PATH.replace(DATASET_FILE, 'X.csv'), index=True)
+    y.to_csv(DATASET_RDATA_PATH.replace(DATASET_FILE, 'y.csv'), index=True)
+
+    # Scale Data
+    X = scale_data(X)
 
     # Split Train and Test Data from Clean Dataframe
     print('Spliting Dataset')

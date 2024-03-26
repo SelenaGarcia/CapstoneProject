@@ -63,28 +63,34 @@ def calculate_and_prune_dataset(priorizationFile: str, datasetFile: str):
     priorization = pd.read_excel(priorizationFile)
     dataset = pd.read_csv(datasetFile)
 
+    priorities = dict(zip(priorization['Name'], priorization['Priority']))
+
     # filter non used columns
-    columns = priorization['Name'].tolist()
+    columns = ['age', 'gender'] + priorization['Name'].tolist() + ['disposition']
     datasetFiltered = dataset[columns]
+    datasetFiltered['IsEmergency'] = dataset['disposition'].map({ 'Admit': 1, 'Discharge': 0 })
+
+    # Removes Any Wor with NAN Values
+    # datasetFiltered.dropna(axis=0, how='any', inplace=True)
+    datasetFiltered = datasetFiltered[datasetFiltered.notnull().all(axis=1)]
+
+    # Converts Columns Age, Gender
+    datasetFiltered['age'] = datasetFiltered['age'].apply(lambda x: int(x))
+    datasetFiltered['gender'] = datasetFiltered['gender'].map({ 'Female': 0, 'Male': 1 })
 
     # Replace all numbers in the columns with True or False
-    datasetBoolean = datasetFiltered[columns] != 0
-
-    # Prepare for destructive changes
-    datasetTemp = datasetBoolean.copy()
-
-    for column in datasetTemp.columns:
-        if column in priorization['Name'].values:
-            priority_value = priorization.loc[priorization['Name'] == column, 'Priority'].iloc[0]
-            # Replace values in datasetTemp with priority values if not equal to 0
-            datasetTemp[column] = datasetTemp[column].apply(lambda x: priority_value if x != False else 0)
-
+    for column in priorization['Name'].tolist():
+        priority = priorities[column]
+        datasetFiltered[column] = datasetFiltered[column].apply(lambda x: int(priority) if x else int(0))
+    
     # Create a new column with the sum of columns present in priorization['Name']
-    datasetTemp['PriorityIndex'] = datasetTemp[priorization['Name']].sum(axis=1)
-    datasetTemp['IsEmergency'] = dataset['disposition'].map({ 'Admit': True, 'Discharge': False })
+    datasetFiltered['Priority'] = datasetFiltered[priorization['Name'].tolist()].max(axis=1)
 
-    X = datasetBoolean
-    y = datasetTemp[['PriorityIndex', 'IsEmergency']]
+    # Removed Rows where Priority is 0
+    datasetFiltered = datasetFiltered.loc[datasetFiltered['Priority'] != 0]
+
+    X = datasetFiltered[['age', 'gender'] + priorization['Name'].tolist()]
+    y = datasetFiltered[['IsEmergency', 'Priority']]
 
     return (X, y)
 

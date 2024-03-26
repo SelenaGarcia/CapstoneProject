@@ -1,6 +1,8 @@
 import gradio as gr
 import pandas as pd
 
+from itertools import chain
+
 class WebApp:
     def __init__(self, model, priority_file_path: str, host: str = '0.0.0.0', port: int = 8080) -> None:
         self.model = model
@@ -9,9 +11,10 @@ class WebApp:
         self.genres = ["Female", "Male"]
         self.data = pd.read_excel(priority_file_path)
         self.features = self.get_features()
-        self.features_questions = self.get_questions()
+        self.features_questions = self.get_questions_by_features()
+        self.priorities = self.get_priorities_by_features()
     
-    def get_questions(self):
+    def get_questions_by_features(self):
         return dict(zip(self.data['Label'], self.data['Name']))
     
     def get_features(self):
@@ -20,21 +23,26 @@ class WebApp:
     def get_types(self):
         return self.data['Type'].tolist()
     
+    def get_priorities_by_features(self):
+        return dict(zip(self.data['Name'], self.data['Priority']))
+    
     def classify_emergency(self, *argv):
         patient_name = argv[0]
         patient_age = argv[1]
         patient_sex = argv[2]
-        patient_symptoms = argv[3]
+        patient_symptoms = list(chain.from_iterable(argv[3:]))
 
         temp_features = [self.features_questions[patient_symptom] for patient_symptom in patient_symptoms]
-        features = [(feature in temp_features) for feature in self.features]
-
-        data = {self.features[i]: [features[i]] for i in range(len(self.features))}
+        
+        data = {'age': [int(patient_age)], 'gender': [0] if patient_sex == 'Female' else [1]}
+        for feature in self.features:
+            data[feature] = [self.priorities[feature]] if feature in temp_features else [0]
+        
         df = pd.DataFrame.from_dict(data)
 
         result = self.model.predict(df)
 
-        return f'Patient Name: {patient_name}, Patient Age: {patient_age}, Patient Sex: {patient_sex}, Patient Symptoms: {patient_symptoms}, Prediction: {result}'
+        return f'Patient Name: {patient_name}, Patient Age: {patient_age}, Patient Sex: {patient_sex}, Patient Symptoms: {patient_symptoms}, Is Emergency: {result[0][0]}, Priority: {result[0][1]}'
 
     def get_demo(self):
         inputs = []
@@ -42,7 +50,12 @@ class WebApp:
         inputs.append(gr.Textbox(label="Patient Name"))
         inputs.append(gr.Number(label="Patient Age", minimum=0, maximum=150))
         inputs.append(gr.Dropdown(choices=self.genres, label="Patient Sex"))
-        inputs.append(gr.CheckboxGroup(choices=self.features_questions.keys(), label="Patient Symptoms | State", info="Patient Has | Had..."))
+
+        categories = sorted(list(set(self.get_types())))
+        for category in categories:
+            symptoms = self.data[self.data['Type'] == category]
+            questions = dict(zip(symptoms['Label'], symptoms['Name']))
+            inputs.append(gr.CheckboxGroup(choices=questions.keys(), label=category, info="Patient Has | Had..."))
 
         is_emergency = gr.Textbox(label="Classification")
 

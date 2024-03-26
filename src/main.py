@@ -45,6 +45,10 @@ if __name__ == '__main__':
     X, y = calculate_and_prune_dataset(PRIORITY_FILE_PATH, DATASET_CSV_PATH)
     # X, y = prepare_data(DATASET_CSV_PATH)
 
+    # Saves X and Y Data to CSV Files
+    # X.to_csv(DATASET_RDATA_PATH.replace(DATASET_FILE, 'X.csv'), index=True)
+    # y.to_csv(DATASET_RDATA_PATH.replace(DATASET_FILE, 'y.csv'), index=True)
+
     # Split Train and Test Data from Clean Dataframe
     print('Spliting Dataset')
     X_train, X_test, y_train, y_test = split_train_test_data(X, y, RANDOM_STATE, TEST_SIZE, TRAIN_SIZE)

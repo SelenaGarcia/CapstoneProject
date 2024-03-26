@@ -12,5 +12,6 @@ pyreadr
 requests
 scikit-learn
 seaborn
+tensorflow
 urllib3
 xlsx2csv

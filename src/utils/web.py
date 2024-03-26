@@ -40,9 +40,17 @@ class WebApp:
         
         df = pd.DataFrame.from_dict(data)
 
-        result = self.model.predict(df)
+        prediction = self.model.predict(df)
 
-        return f'Patient Name: {patient_name}, Patient Age: {patient_age}, Patient Sex: {patient_sex}, Patient Symptoms: {patient_symptoms}, Is Emergency: {result[0][0]}, Priority: {result[0][1]}'
+        result = ''
+        result += f'Patient Name: {patient_name}\n'
+        result += f'Patient Age: {int(patient_age)}\n'
+        result += f'Patient Sex: {patient_sex}\n'
+        result += f'Patient Symptoms: {patient_symptoms}\n'
+        result += f'Is Emergency: {"Yes" if prediction[0][0] == 1 else "No"}\n'
+        result += f'Priority: {prediction[0][1]} / 10'
+
+        return result
 
     def get_demo(self):
         inputs = []
@@ -57,7 +65,7 @@ class WebApp:
             questions = dict(zip(symptoms['Label'], symptoms['Name']))
             inputs.append(gr.CheckboxGroup(choices=questions.keys(), label=category, info="Patient Has | Had..."))
 
-        is_emergency = gr.Textbox(label="Classification")
+        is_emergency = gr.Textbox(label="Triage")
 
         return gr.Interface(fn=self.classify_emergency, inputs=inputs, outputs=is_emergency, title='Triage Sense', allow_flagging='auto')
 

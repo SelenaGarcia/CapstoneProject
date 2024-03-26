@@ -19,3 +19,5 @@ python_env.yaml
 README.md
 data/Results.csv
 data/Results.rdata
+data/X.csv
+data/y.csv
